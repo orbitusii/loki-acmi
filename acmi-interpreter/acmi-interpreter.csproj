@@ -7,4 +7,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="loki-geo">
+      <HintPath>..\..\loki-geo\loki-geo\loki-geo\bin\Debug\net48\loki-geo.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
