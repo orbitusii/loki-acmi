@@ -71,5 +71,63 @@ public class ACMIMission
     /// </summary>
     public LatLonCoord ReferencePosition { get; set; } = new LatLonCoord() { Lat_Degrees = 0, Lon_Degrees = 0, Alt = 0 };
 
-    
+    /// <summary>
+    /// Invoked when ANY event is logged.
+    /// </summary>
+    public event EventHandler<ACMIEventArgs>? OnAnyEvent;
+    /// <summary>
+    /// Invoked when a Message (or Generic) event is logged.
+    /// </summary>
+    public event EventHandler<ACMIEventArgs>? OnGenericEvent;
+    /// <summary>
+    /// Invoked when a Bookmark event is logged.
+    /// </summary>
+    public event EventHandler<ACMIEventArgs>? OnBookmarkEvent;
+    /// <summary>
+    /// Invoked when a Debug event is logged. Requires Tacview to be in Debug mode.
+    /// </summary>
+    public event EventHandler<ACMIEventArgs>? OnDebugEvent;
+    /// <summary>
+    /// Invoked when an object leaves the area without being destroyed.
+    /// </summary>
+    public event EventHandler<ACMIEventArgs>? OnObjectLeftArea;
+    /// <summary>
+    /// Invoked when an object is destroyed.
+    /// </summary>
+    public event EventHandler<ACMIEventArgs>? OnObjectDestroyed;
+    /// <summary>
+    /// Invoked when an object takes off and begins flight.
+    /// </summary>
+    public event EventHandler<ACMIEventArgs>? OnObjectTakeoff;
+    /// <summary>
+    /// Invoked when an object lands.
+    /// </summary>
+    public event EventHandler<ACMIEventArgs>? OnObjectLand;
+    /// <summary>
+    /// Invoked when a weapon times out, e.g. it reaches or misses the target.
+    /// </summary>
+    public event EventHandler<ACMIEventArgs>? OnWeaponTimeout;
+
+    /// <summary>
+    /// Invokes any event handlers subscribed to the associated Event Types.
+    /// </summary>
+    /// <param name="args"></param>
+    protected virtual void RaiseEvent(ACMIEventArgs args)
+    {
+        var raiseAny = OnAnyEvent;
+        if (raiseAny is not null) raiseAny(this, args);
+
+        var raiseSpecific = args.EventType switch
+        {
+            ACMIEventType.Bookmark => OnBookmarkEvent,
+            ACMIEventType.Debug => OnDebugEvent,
+            ACMIEventType.LeftArea => OnObjectLeftArea,
+            ACMIEventType.Destroyed => OnObjectDestroyed,
+            ACMIEventType.TakenOff => OnObjectTakeoff,
+            ACMIEventType.Landed => OnObjectLand,
+            ACMIEventType.Timeout => OnWeaponTimeout,
+            _ => OnGenericEvent,
+        };
+        if (raiseSpecific is not null) raiseSpecific(this, args);
+    }
 }
