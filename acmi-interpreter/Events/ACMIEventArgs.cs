@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace acmi_interpreter;
+﻿namespace acmi_interpreter;
 
 /// <summary>
 /// Events can be used to inject any kind of text, bookmark and debug information into the flight recording. They are a bit special: They are declared like properties, but unlike properties, you can declare several events in the same frame without overriding the previous one.
