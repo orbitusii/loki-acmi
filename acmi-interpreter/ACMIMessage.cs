@@ -8,14 +8,14 @@ namespace acmi_interpreter;
 /// </summary>
 public readonly struct ACMIMessage
 {
-    const string CommaSplitter = @"(?<![\\]),";
-    private static readonly Regex CommaFinder = new(CommaSplitter, RegexOptions.CultureInvariant | RegexOptions.Singleline);
+    const string CommaFinder = @"(?<![\\]),";
+    private static readonly Regex CommaSplitter = new(CommaFinder, RegexOptions.CultureInvariant | RegexOptions.Singleline);
 
     public ACMIMessage(string text)
     {
         BareText = text;
 
-        var matches = CommaFinder.Matches(text);
+        var matches = CommaSplitter.Matches(text);
         Segments = new string[matches.Count + 1];
         int lastPos = -1;
         for (int i = 0; i < matches.Count; i++)
