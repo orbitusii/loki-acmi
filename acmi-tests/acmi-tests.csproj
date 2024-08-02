@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="acmi-interpreter" />
+    <Using Include="acmi_interpreter" />
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
 

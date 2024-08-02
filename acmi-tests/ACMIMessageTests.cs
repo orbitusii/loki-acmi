@@ -13,6 +13,8 @@ namespace acmi_tests
             ACMIMessage message = new ACMIMessage(line);
 
             Assert.IsTrue(message.IsGlobal);
+            Console.WriteLine(message.Segments.Length);
+            Console.WriteLine(string.Join("\n", message.Segments));
             Assert.IsTrue(message.Segments.Length == 3);
         }
     }

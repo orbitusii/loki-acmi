@@ -11,20 +11,21 @@ public readonly struct ACMIMessage
     const string CommaSplitter = @"(?<![\\]),";
     private static readonly Regex CommaFinder = new(CommaSplitter, RegexOptions.CultureInvariant | RegexOptions.Singleline);
 
-    public ACMIMessage (string text)
+    public ACMIMessage(string text)
     {
         BareText = text;
-        
-        var matches = CommaFinder.Matches (text);
-        Segments = new string[matches.Count];
+
+        var matches = CommaFinder.Matches(text);
+        Segments = new string[matches.Count + 1];
         int lastPos = -1;
-        for(int i = 0; i < matches.Count; i++)
+        for (int i = 0; i < matches.Count; i++)
         {
             int startAt = lastPos + 1;
             int index = matches[i].Index;
             Segments[i] = text.Substring(startAt, index - startAt);
             lastPos = index;
         }
+        Segments[^1] = text.Substring(lastPos+1, text.Length - 1 - lastPos);
     }
 
     public string[] Segments { get; init; }
