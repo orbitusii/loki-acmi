@@ -153,8 +153,20 @@ public class ACMIMission
             {
                 // Update global stuff
             }
-            else if (Objects.ContainsKey(message.ObjectID)) 
-                Objects[message.ObjectID].UpdateFrom(message);
+            else if (Objects.ContainsKey(message.ObjectID))
+            {
+                var obj = Objects[message.ObjectID];
+
+                obj.UpdateFrom(message);
+                if (message.IsDestroyed) obj.Destroyed = true;
+            }
+            else
+            {
+                var newObj = new ACMIObject(message.ObjectID);
+                newObj.UpdateFrom(message);
+
+                Objects[message.ObjectID] = newObj;
+            }
         }
     }
 }

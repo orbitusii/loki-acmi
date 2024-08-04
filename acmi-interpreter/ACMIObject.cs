@@ -12,10 +12,16 @@ namespace acmi_interpreter;
 /// </summary>
 public class ACMIObject
 {
+    public ACMIObject (ulong ObjectID)
+    {
+        this.ObjectID = ObjectID;
+    }
+
     // KEY VALUES
     public ulong ObjectID { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty;
+    public bool Destroyed { get; set; }
 
     [ACMIObjectProperty("T", typeof(loki_geo.LatLonCoord))]
     public loki_geo.LatLonCoord Position { get; set; }
@@ -144,19 +150,22 @@ public class ACMIObject
         foreach (var segment in message.Segments)
         {
             string[] split = segment.Split('=');
+            PropertyInfo prop;
+            object? index = null;
 
-            if (props.FirstOrDefault(p => p.Name.Equals(split[0])) is PropertyInfo pr)
-            {
-
-            }
+            if (props.FirstOrDefault(p => p.Name.Equals(split[0])) is PropertyInfo pr) prop = pr;
             else
             {
                 var pras = props.Where(p => p.GetCustomAttribute<ACMIObjectPropertyAttribute>() is ACMIObjectPropertyAttribute);
                 // NOT A NULL DEREF UNLESS THE ATTRIBUTE IS DESTROYED BETWEEN THESE CALLS (IMPOSSIBLE)
-                var matched = pras.FirstOrDefault(p => p.GetCustomAttribute<ACMIObjectPropertyAttribute>().Alias.Equals(split[0]));
+                var matched = pras.FirstOrDefault(p => p.GetCustomAttribute<ACMIObjectPropertyAttribute>()?.Alias.Equals(split[0]) ?? false);
 
                 if (matched is null) continue;
+                prop = matched;
+                index = prop.GetCustomAttribute<ACMIObjectPropertyAttribute>()?.TargetIndex ?? null;
             }
+
+            UpdateProperty(prop, split[1], index);
         }
     }
 
