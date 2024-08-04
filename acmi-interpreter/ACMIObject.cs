@@ -6,12 +6,16 @@ using System.Threading.Tasks;
 
 namespace acmi_interpreter;
 
+/// <summary>
+/// A real-time object from an ACMI source.
+/// </summary>
 public class ACMIObject
 {
     public ulong ObjectID { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty;
 
+    [ACMIObjectProperty("Parent", typeof(ulong))]
     public ulong ParentID { get; set; }
     public ulong Next {  get; set; }
     /// <summary>
@@ -48,5 +52,18 @@ public class ACMIObject
     public string Label { get; set; } = string.Empty;
 
     public ulong FocusedTarget { get; set; }
+
+    [ACMIObjectProperty("LockedTarget", typeof(ulong), 0)]
+    [ACMIObjectProperty("LockedTarget1", typeof(ulong), 1)]
+    [ACMIObjectProperty("LockedTarget2", typeof(ulong), 2)]
+    [ACMIObjectProperty("LockedTarget3", typeof(ulong), 3)]
+    [ACMIObjectProperty("LockedTarget4", typeof(ulong), 4)]
+    [ACMIObjectProperty("LockedTarget5", typeof(ulong), 5)]
+    [ACMIObjectProperty("LockedTarget6", typeof(ulong), 6)]
+    [ACMIObjectProperty("LockedTarget7", typeof(ulong), 7)]
+    [ACMIObjectProperty("LockedTarget8", typeof(ulong), 8)]
+    [ACMIObjectProperty("LockedTarget9", typeof(ulong), 9)]
     public ulong[] LockedTarget { get; set; } = new ulong[10];
+
+
 }
