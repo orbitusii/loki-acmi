@@ -15,6 +15,12 @@ public readonly struct ACMIMessage
     {
         BareText = text;
 
+        if(BareText.StartsWith('-'))
+        {
+            BareText.Remove(0, 1);
+            IsDestroyed = true;
+        }
+
         var matches = CommaSplitter.Matches(text);
         Segments = new string[matches.Count + 1];
         int lastPos = -1;
@@ -28,10 +34,12 @@ public readonly struct ACMIMessage
         Segments[^1] = text.Substring(lastPos+1, text.Length - 1 - lastPos);
     }
 
+    public bool IsDestroyed { get; init; } = false;
+
     public string[] Segments { get; init; }
 
     public string BareText { get; init; }
 
     public bool IsGlobal => BareText.StartsWith("0,");
-    public ulong ObjectID => ulong.Parse(Segments[0]);
+    public ulong ObjectID => ulong.Parse(Segments[0], System.Globalization.NumberStyles.AllowHexSpecifier);
 }
