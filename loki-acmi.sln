@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "acmi-interpreter", "acmi-interpreter\acmi-interpreter.csproj", "{40FAA92F-4A5C-4D48-AB0B-0A244FECF0C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "acmi-interpreter", "acmi-interpreter\acmi-interpreter.csproj", "{40FAA92F-4A5C-4D48-AB0B-0A244FECF0C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "acmi-tests", "acmi-tests\acmi-tests.csproj", "{EB654BDE-210D-4020-B5AB-731B7C9EFF66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "acmi-tests", "acmi-tests\acmi-tests.csproj", "{EB654BDE-210D-4020-B5AB-731B7C9EFF66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tacview-net", "tacview-net\tacview-net.csproj", "{A890942E-DF0F-4AA3-9EBF-CCCF5F754AA1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{EB654BDE-210D-4020-B5AB-731B7C9EFF66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB654BDE-210D-4020-B5AB-731B7C9EFF66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB654BDE-210D-4020-B5AB-731B7C9EFF66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A890942E-DF0F-4AA3-9EBF-CCCF5F754AA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A890942E-DF0F-4AA3-9EBF-CCCF5F754AA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A890942E-DF0F-4AA3-9EBF-CCCF5F754AA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A890942E-DF0F-4AA3-9EBF-CCCF5F754AA1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
