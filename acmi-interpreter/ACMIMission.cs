@@ -125,4 +125,36 @@ public class ACMIMission
         };
         if (raiseSpecific is not null) raiseSpecific(this, args);
     }
+
+    /// <summary>
+    /// The current Mission time, in seconds.
+    /// </summary>
+    public float CurrentFrame { get; private set; } = 0f;
+    public DateTime CurrentTime_UTC => ReferenceTime + TimeSpan.FromSeconds(CurrentFrame);
+
+    /// <summary>
+    /// A collection containing all of the objects in this mission.
+    /// </summary>
+    public Dictionary<ulong, ACMIObject> Objects { get; private set; } = new Dictionary<ulong, ACMIObject>();
+
+    public void UpdateWithData(string[] Lines)
+    {
+        if (Lines[0].StartsWith('#'))
+        {
+            float newTime = float.Parse(Lines[0].Remove(0, 1));
+            CurrentFrame = newTime;
+        }
+        foreach(var line in Lines)
+        {
+            if (line.StartsWith("//")) continue;
+
+            ACMIMessage message = new(line);
+            if(message.IsGlobal)
+            {
+                // Update global stuff
+            }
+            else if (Objects.ContainsKey(message.ObjectID)) 
+                Objects[message.ObjectID].UpdateFrom(message);
+        }
+    }
 }
