@@ -167,6 +167,11 @@ public class ACMIMission
 
                 Objects[message.ObjectID] = newObj;
             }
+
+            if(message.IsEvent)
+            {
+                RaiseEvent(new() { EventType = ACMIEventType.Message, EventText = message.BareText });
+            }
         }
     }
 }

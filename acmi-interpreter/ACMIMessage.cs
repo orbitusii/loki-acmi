@@ -34,12 +34,14 @@ public readonly struct ACMIMessage
         Segments[^1] = text.Substring(lastPos+1, text.Length - 1 - lastPos);
     }
 
-    public bool IsDestroyed { get; init; } = false;
 
     public string[] Segments { get; init; }
 
     public string BareText { get; init; }
 
     public bool IsGlobal => BareText.StartsWith("0,");
+    public bool IsDestroyed { get; init; } = false;
+    public bool IsEvent => Segments[1].StartsWith("Event=");
+
     public ulong ObjectID => ulong.Parse(Segments[0], System.Globalization.NumberStyles.AllowHexSpecifier);
 }
