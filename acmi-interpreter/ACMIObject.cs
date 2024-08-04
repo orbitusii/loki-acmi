@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -135,4 +136,86 @@ public class ACMIObject
     public float LockedTargetAzimuth { get; set; }
     public float LockedTargetElevation { get; set; }
     public float LockedTargetRange { get; set; }
+
+    public void UpdateFrom(ACMIMessage message)
+    {
+        var props = GetType().GetProperties();
+
+        foreach (var segment in message.Segments)
+        {
+            string[] split = segment.Split('=');
+
+            if (props.FirstOrDefault(p => p.Name.Equals(split[0])) is PropertyInfo pr)
+            {
+
+            }
+            else
+            {
+                var pras = props.Where(p => p.GetCustomAttribute<ACMIObjectPropertyAttribute>() is ACMIObjectPropertyAttribute);
+                // NOT A NULL DEREF UNLESS THE ATTRIBUTE IS DESTROYED BETWEEN THESE CALLS (IMPOSSIBLE)
+                var matched = pras.FirstOrDefault(p => p.GetCustomAttribute<ACMIObjectPropertyAttribute>().Alias.Equals(split[0]));
+
+                if (matched is null) continue;
+            }
+        }
+    }
+
+    protected bool UpdateProperty(PropertyInfo property, string ValueText, object? index)
+    {
+        Type ptype = property.PropertyType;
+        object? value = null;
+
+        if (property.Name == nameof(Position))
+        {
+            string[] splits = ValueText.Split('|');
+            int length = splits.Length;
+
+            float lon = float.Parse(splits[0]);
+            float lat = float.Parse(splits[1]);
+            float alt = float.Parse(splits[2]);
+
+            loki_geo.LatLonCoord coord = new()
+            {
+                Alt = alt,
+                Lon_Degrees = lon,
+                Lat_Degrees = lat
+            };
+
+            if (length == 3 || length == 5) value = coord;
+            else if (length == 6 || length == 9)
+            {
+                Heading = float.Parse(splits[5]);
+                value = coord;
+            }
+            else return false;
+        }
+        else if (ptype == typeof(ulong))
+        {
+            bool parsed = ulong.TryParse(ValueText, System.Globalization.NumberStyles.AllowHexSpecifier, null, out ulong result);
+            if (!parsed) return false;
+            else value = result;
+        }
+        else if (ptype == typeof(float))
+        {
+            bool parsed = float.TryParse(ValueText, out float result);
+            if (!parsed) return false;
+            else value = result;
+        }
+        else if (ptype == typeof(int))
+        {
+            bool parsed = int.TryParse(ValueText, out int result);
+            if (!parsed) return false;
+            else value = result;
+        }
+        else if(ptype == typeof(bool))
+        {
+            bool result = ValueText == "1" ? true : false;
+            value = result;
+        }
+        else if (ptype == typeof(string)) value = ValueText;
+
+        if (index is null) property.SetValue(this, value);
+        else property.SetValue(this, value, new object?[] { index });
+        return true;
+    }
 }
