@@ -33,5 +33,5 @@ public readonly struct ACMIMessage
     public string BareText { get; init; }
 
     public bool IsGlobal => BareText.StartsWith("0,");
-    public ulong ObjectID { get; init; } = 0;
+    public ulong ObjectID => ulong.Parse(Segments[0]);
 }
