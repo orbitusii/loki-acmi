@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using tacview_net;
+using TestConsole;
 
 Console.WriteLine("Hello, World!");
 
@@ -30,7 +31,11 @@ password = Console.ReadLine();
 CancellationTokenSource cts = new CancellationTokenSource();
 
 TacviewNetworker networker = new TacviewNetworker(hostname, port ?? 42674);
-await networker.TryStreamDataAsync(username, password, cts.Token);
+Thread netThread = new Thread(async () => await networker.TryStreamDataAsync(username, password, cts.Token));
+netThread.Start();
+
+DummyPlugin plugin = new DummyPlugin();
+await plugin.UpdateMissionAsync(networker, cts.Token);
 
 while (!cts.Token.IsCancellationRequested)
 {
