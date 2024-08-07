@@ -52,7 +52,7 @@ public class TacviewNetworker : IDisposable
                 if (received == 0) continue;
 
                 string rawMessage = Encoding.UTF8.GetString(buffer, 0, received);
-                Console.WriteLine(rawMessage);
+                //Console.WriteLine(rawMessage);
 
                 string[] lines = rawMessage.Split("\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                 
