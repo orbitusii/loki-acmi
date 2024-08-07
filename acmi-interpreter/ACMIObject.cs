@@ -151,6 +151,8 @@ public class ACMIObject
         foreach (var segment in message.Segments)
         {
             string[] split = segment.Split('=');
+            if (split.Length < 2) continue;
+
             PropertyInfo prop;
             object? index = null;
 
@@ -175,26 +177,29 @@ public class ACMIObject
     {
         Type ptype = property.PropertyType;
         object? value = null;
-        object? currentValue = property.GetValue(this, new object?[] { index });
 
         if (property.Name == nameof(Position))
         {
-            LatLonCoord currentLatLon = (LatLonCoord?)currentValue ?? new LatLonCoord();
+            if (!ValueText.Contains('|')) return false;
+
+            LatLonCoord currentLatLon = this.Position;
             string[] splits = ValueText.Split('|');
             int length = splits.Length;
 
             double lon = double.TryParse(splits[0], out var rlo) ? rlo : currentLatLon.Lon_Degrees;
             double lat = double.TryParse(splits[1], out var rla) ? rla : currentLatLon.Lat_Degrees;
-            double alt = double.TryParse(splits[2], out var ra) ? ra : currentLatLon.Alt;
 
             loki_geo.LatLonCoord coord = new()
             {
-                Alt = alt,
                 Lon_Degrees = lon,
                 Lat_Degrees = lat
             };
 
-            if (length == 3 || length == 5) value = coord;
+            if (length == 3 || length == 5)
+            {
+                coord.Alt = double.TryParse(splits[2], out var ra) ? ra : currentLatLon.Alt;
+                value = coord;
+            }
             else if (length == 6 || length == 9)
             {
                 Heading = float.TryParse(splits[5], out var hdg) ? hdg : Heading;
