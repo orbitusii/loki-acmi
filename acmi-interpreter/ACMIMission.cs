@@ -146,7 +146,12 @@ public class ACMIMission
         }
         foreach(var line in Lines)
         {
-            if (line.StartsWith("//")) continue;
+            if (line.StartsWith("//") || line.StartsWith("#")) continue;
+            else if(line.StartsWith("FileType=") || line.StartsWith("FileVersion="))
+            {
+                Console.WriteLine(line);
+                continue;
+            }
 
             ACMIMessage message = new(line);
             if(message.IsGlobal)
