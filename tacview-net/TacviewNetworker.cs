@@ -16,22 +16,39 @@ public class TacviewNetworker : IDisposable
     protected Socket TCPSocket;
     public IPAddress Address { get; set; }
     public int Port { get; set; }
-    public bool PurgeQueueOnNewFrame { get; set; }
     private NetworkStream? NetworkStream { get; set; }
+
+    private CancellationTokenSource cts { get; set; }
+    private Thread? netThread { get; set; }
+    public bool IsRunning => netThread is not null && netThread.IsAlive;
 
     public ConcurrentQueue<string> QueuedMessages = new ConcurrentQueue<string>();
 
-    public TacviewNetworker(string hostname, int port, bool PurgeOnNewFrame = false)
+    public TacviewNetworker(string hostname, int port)
     {
         TCPSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         TCPSocket.ReceiveBufferSize = 8192;
         var host = Dns.GetHostEntry(hostname);
         Address = host.AddressList[0];
         Port = port;
-        PurgeQueueOnNewFrame = PurgeOnNewFrame;
     }
 
-    public async Task TryStreamDataAsync(string username, string? password, CancellationToken cancellationToken)
+    public void Start (string username, string? password)
+    {
+        if (IsRunning) return;
+        cts = new CancellationTokenSource();
+        Thread netThread = new Thread(() => TryStreamData(username, password, cts.Token));
+        netThread.Start();
+    }
+
+    public void Stop()
+    {
+        if (!IsRunning) return;
+        cts.Cancel();
+        netThread?.Join();
+    }
+
+    private void TryStreamData(string username, string? password, CancellationToken cancellationToken)
     {
         IPEndPoint ipe = new IPEndPoint(Address, Port);
 
@@ -39,7 +56,7 @@ public class TacviewNetworker : IDisposable
 
         TCPSocket.Connect(ipe);
 
-        if (!await Handshake(username, hash))
+        if (!Handshake(username, hash).Result)
         {
             Console.WriteLine("Unable to connect - no handshake sent");
         }

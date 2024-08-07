@@ -30,15 +30,18 @@ namespace TestConsole
             {
                 List<string> messages = new List<string>();
                 if (source.QueuedMessages.TryDequeue(out string message))
+                {
                     messages.Add(message);
+                    if(message.StartsWith('#'))
+                        Console.WriteLine($"T={Mission.CurrentFrame} => {Mission.Objects.Count()} objects");
+                }
 
                 if (messages.Count <= 0)
                     continue;
 
                 Mission.UpdateWithData(messages.ToArray());
                 messages.Clear();
-                Console.Clear();
-                Console.WriteLine($"T={Mission.CurrentFrame} => {Mission.Objects.Count()} objects");
+                
             }
         }
     }

@@ -31,8 +31,7 @@ password = Console.ReadLine();
 CancellationTokenSource cts = new CancellationTokenSource();
 
 TacviewNetworker networker = new TacviewNetworker(hostname, port ?? 42674);
-Thread netThread = new Thread(async () => await networker.TryStreamDataAsync(username, password, cts.Token));
-netThread.Start();
+networker.Start(username, password);
 
 DummyPlugin plugin = new DummyPlugin();
 await plugin.UpdateMissionAsync(networker, cts.Token);
