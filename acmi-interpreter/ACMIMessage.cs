@@ -34,7 +34,6 @@ public readonly struct ACMIMessage
         Segments[^1] = text.Substring(lastPos+1, text.Length - 1 - lastPos);
     }
 
-
     public string[] Segments { get; init; }
 
     public string BareText { get; init; }
@@ -43,5 +42,5 @@ public readonly struct ACMIMessage
     public bool IsDestroyed { get; init; } = false;
     public bool IsEvent => Segments[1].StartsWith("Event=");
 
-    public ulong ObjectID => ulong.Parse(Segments[0], System.Globalization.NumberStyles.AllowHexSpecifier);
+    public ulong ObjectID => ulong.TryParse(Segments[0], System.Globalization.NumberStyles.AllowHexSpecifier, null, out ulong result) ? result : ulong.MaxValue;
 }
