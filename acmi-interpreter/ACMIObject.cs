@@ -1,4 +1,5 @@
-﻿using System;
+﻿using loki_geo;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -156,12 +157,13 @@ public class ACMIObject
             if (props.FirstOrDefault(p => p.Name.Equals(split[0])) is PropertyInfo pr) prop = pr;
             else
             {
-                var pras = props.Where(p => p.GetCustomAttribute<ACMIObjectPropertyAttribute>() is ACMIObjectPropertyAttribute);
-                // NOT A NULL DEREF UNLESS THE ATTRIBUTE IS DESTROYED BETWEEN THESE CALLS (IMPOSSIBLE)
-                var matched = pras.FirstOrDefault(p => p.GetCustomAttribute<ACMIObjectPropertyAttribute>()?.Alias.Equals(split[0]) ?? false);
-
+                IEnumerable<PropertyInfo> pras = props.Where(p => p.CustomAttributes.Any(a => a.AttributeType == typeof(ACMIObjectPropertyAttribute)));
+                var matched = pras.FirstOrDefault(p => p.GetCustomAttributes<ACMIObjectPropertyAttribute>().FirstOrDefault(a => a.Alias.Equals(split[0])) is not null);
+                
                 if (matched is null) continue;
+
                 prop = matched;
+                var attribute = matched.GetCustomAttributes<ACMIObjectPropertyAttribute>().FirstOrDefault(a => a.Alias.Equals(split[0]));
                 index = prop.GetCustomAttribute<ACMIObjectPropertyAttribute>()?.TargetIndex ?? null;
             }
 
@@ -173,15 +175,17 @@ public class ACMIObject
     {
         Type ptype = property.PropertyType;
         object? value = null;
+        object? currentValue = property.GetValue(this, new object?[] { index });
 
         if (property.Name == nameof(Position))
         {
+            LatLonCoord currentLatLon = (LatLonCoord?)currentValue ?? new LatLonCoord();
             string[] splits = ValueText.Split('|');
             int length = splits.Length;
 
-            float lon = float.Parse(splits[0]);
-            float lat = float.Parse(splits[1]);
-            float alt = float.Parse(splits[2]);
+            double lon = double.TryParse(splits[0], out var rlo) ? rlo : currentLatLon.Lon_Degrees;
+            double lat = double.TryParse(splits[1], out var rla) ? rla : currentLatLon.Lat_Degrees;
+            double alt = double.TryParse(splits[2], out var ra) ? ra : currentLatLon.Alt;
 
             loki_geo.LatLonCoord coord = new()
             {
@@ -193,7 +197,7 @@ public class ACMIObject
             if (length == 3 || length == 5) value = coord;
             else if (length == 6 || length == 9)
             {
-                Heading = float.Parse(splits[5]);
+                Heading = float.TryParse(splits[5], out var hdg) ? hdg : Heading;
                 value = coord;
             }
             else return false;
