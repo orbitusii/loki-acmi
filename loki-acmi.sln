@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "acmi-tests", "acmi-tests\ac
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tacview-net", "tacview-net\tacview-net.csproj", "{A890942E-DF0F-4AA3-9EBF-CCCF5F754AA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{36ADFCDC-301F-436B-A8C9-E37678E8596D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestConsole", "TestConsole\TestConsole.csproj", "{36ADFCDC-301F-436B-A8C9-E37678E8596D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "loki-acmi", "loki-acmi\loki-acmi.csproj", "{3E2C6F3E-C571-4AFA-89F5-F7FD7193B5DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{36ADFCDC-301F-436B-A8C9-E37678E8596D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36ADFCDC-301F-436B-A8C9-E37678E8596D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36ADFCDC-301F-436B-A8C9-E37678E8596D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E2C6F3E-C571-4AFA-89F5-F7FD7193B5DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E2C6F3E-C571-4AFA-89F5-F7FD7193B5DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E2C6F3E-C571-4AFA-89F5-F7FD7193B5DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E2C6F3E-C571-4AFA-89F5-F7FD7193B5DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

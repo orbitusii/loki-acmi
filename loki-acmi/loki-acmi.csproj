@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>loki_acmi</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\acmi-interpreter\acmi-interpreter.csproj" />
+    <ProjectReference Include="..\tacview-net\tacview-net.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="loki-bms-common">
+      <HintPath>..\..\loki-bms-csharp\loki-bms-common\bin\Debug\net6.0\loki-bms-common.dll</HintPath>
+    </Reference>
+    <Reference Include="loki-geo">
+      <HintPath>..\..\loki-geo\loki-geo\loki-geo\bin\Debug\net48\loki-geo.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
