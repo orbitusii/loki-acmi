@@ -28,20 +28,12 @@ namespace TestConsole
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                List<string> messages = new List<string>();
-                if (source.QueuedMessages.TryDequeue(out string message))
+                if (source.QueuedMessages.TryDequeue(out string? message))
                 {
-                    messages.Add(message);
-                    if(message.StartsWith('#'))
+                    Mission.UpdateWithData(new string[] { message });
+                    if (message.StartsWith('#'))
                         Console.WriteLine($"T={Mission.CurrentFrame} => {Mission.Objects.Count()} objects");
                 }
-
-                if (messages.Count <= 0)
-                    continue;
-
-                Mission.UpdateWithData(messages.ToArray());
-                messages.Clear();
-                
             }
         }
     }
