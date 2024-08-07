@@ -37,6 +37,7 @@ namespace TestConsole
 
                 Mission.UpdateWithData(messages.ToArray());
                 messages.Clear();
+                Console.Clear();
                 Console.WriteLine($"T={Mission.CurrentFrame} => {Mission.Objects.Count()} objects");
             }
         }
