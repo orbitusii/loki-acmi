@@ -7,6 +7,7 @@ using System;
 using System.Text.Unicode;
 using acmi_interpreter;
 using System.Collections.Concurrent;
+using System.Threading;
 
 namespace tacview_net;
 
@@ -16,12 +17,14 @@ public class TacviewNetworker : IDisposable
     public IPAddress Address { get; set; }
     public int Port { get; set; }
     public bool PurgeQueueOnNewFrame { get; set; }
+    private NetworkStream? NetworkStream { get; set; }
 
     public ConcurrentQueue<string> QueuedMessages = new ConcurrentQueue<string>();
 
     public TacviewNetworker(string hostname, int port, bool PurgeOnNewFrame = false)
     {
         TCPSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        TCPSocket.ReceiveBufferSize = 8192;
         var host = Dns.GetHostEntry(hostname);
         Address = host.AddressList[0];
         Port = port;
@@ -41,30 +44,33 @@ public class TacviewNetworker : IDisposable
             Console.WriteLine("Unable to connect - no handshake sent");
         }
 
-        byte[] buffer = new byte[8192];
+        NetworkStream = new NetworkStream(TCPSocket, true);
+        StreamReader Reader = new StreamReader(NetworkStream, Encoding.UTF8);
+        StringBuilder lineBuilder = new StringBuilder(512);
 
         while (!cancellationToken.IsCancellationRequested)
         {
             try
             {
-                int received = await TCPSocket.ReceiveAsync(buffer, SocketFlags.None, cancellationToken);
-
-                if (received == 0) continue;
-
-                string rawMessage = Encoding.UTF8.GetString(buffer, 0, received);
-                //Console.WriteLine(rawMessage);
-
-                string[] lines = rawMessage.Split("\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                
-                if(PurgeQueueOnNewFrame) QueuedMessages.Clear();
-                foreach(string line in lines)
-                    QueuedMessages.Enqueue(line);
-            }
-            catch (Exception ex)
-            {
+                char c = (char)Reader.Read();
+                if (c == '\n')
+                {
+                    QueuedMessages.Enqueue(lineBuilder.ToString());
+                    lineBuilder.Clear();
+                    continue;
+                }
+                else if (c == -1)
+                {
+                    continue;
+                }
+                else lineBuilder.Append(c);
 
             }
+            catch (Exception ex) { }
         }
+
+        NetworkStream.Dispose();
+        Reader.Dispose();
     }
 
     private string HashPassword(string password)
@@ -89,7 +95,7 @@ public class TacviewNetworker : IDisposable
             Console.WriteLine($"Low level: {handshake[0]}\nHigh level: {handshake[1]}\nHost user: {handshake[2]}");
 
             string reply = $"{handshake[0]}\n{handshake[1]}\n{username}\n{passHash}\0";
-            Console.WriteLine($"Reply: {reply}");
+            Console.WriteLine($"Reply: {reply}\n-----=====-----\n");
 
             await TCPSocket.SendAsync(Encoding.UTF8.GetBytes(reply), SocketFlags.None);
 
@@ -100,6 +106,7 @@ public class TacviewNetworker : IDisposable
 
     public void Dispose()
     {
+        TCPSocket.Disconnect(true);
         TCPSocket.Dispose();
     }
 }
