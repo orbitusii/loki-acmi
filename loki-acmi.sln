@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "acmi-interpreter", "acmi-in
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "acmi-tests", "acmi-tests\acmi-tests.csproj", "{EB654BDE-210D-4020-B5AB-731B7C9EFF66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tacview-net", "tacview-net\tacview-net.csproj", "{A890942E-DF0F-4AA3-9EBF-CCCF5F754AA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tacview-net", "tacview-net\tacview-net.csproj", "{A890942E-DF0F-4AA3-9EBF-CCCF5F754AA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{36ADFCDC-301F-436B-A8C9-E37678E8596D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{A890942E-DF0F-4AA3-9EBF-CCCF5F754AA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A890942E-DF0F-4AA3-9EBF-CCCF5F754AA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A890942E-DF0F-4AA3-9EBF-CCCF5F754AA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36ADFCDC-301F-436B-A8C9-E37678E8596D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36ADFCDC-301F-436B-A8C9-E37678E8596D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36ADFCDC-301F-436B-A8C9-E37678E8596D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36ADFCDC-301F-436B-A8C9-E37678E8596D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
