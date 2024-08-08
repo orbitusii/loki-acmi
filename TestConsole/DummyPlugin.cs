@@ -33,8 +33,11 @@ internal class DummyPlugin
                 Mission.UpdateWithData(new string[] { message });
                 if (message.StartsWith('#'))
                 {
+                    var airObjects = Mission.GetAirObjects().ToArray();
+                    var navaids = Mission.GetObjectsByTag("Navaid").ToArray();
+
                     Console.Clear();
-                    Console.WriteLine($"T={Mission.CurrentTime_UTC} => {Mission.Objects.Count()} objects");
+                    Console.WriteLine($"T={Mission.CurrentTime_UTC} => {Mission.Objects.Count()} objects; {airObjects.Count()} air objects; {navaids.Count()} navaids");
                 }
             }
         }

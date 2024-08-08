@@ -136,6 +136,8 @@ public class ACMIMission
     /// A collection containing all of the objects in this mission.
     /// </summary>
     public Dictionary<ulong, ACMIObject> Objects { get; private set; } = new Dictionary<ulong, ACMIObject>();
+    public IEnumerable<ACMIObject> GetObjectsByTag(string tag) => Objects.Values.Where(o => o.Type.Contains(tag, StringComparison.InvariantCultureIgnoreCase));
+    public IEnumerable<ACMIObject> GetAirObjects() => GetObjectsByTag("Air");
 
     public void UpdateWithData(string[] Lines)
     {
