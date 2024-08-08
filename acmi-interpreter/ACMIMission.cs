@@ -146,7 +146,7 @@ public class ACMIMission
         }
         foreach(var line in Lines)
         {
-            if (line.StartsWith("//") || line.StartsWith("#")) continue;
+            if (line.Length < 3 || line.StartsWith("//") || line.StartsWith("#")) continue;
             else if(line.StartsWith("FileType=") || line.StartsWith("FileVersion="))
             {
                 Console.WriteLine(line);
@@ -156,6 +156,11 @@ public class ACMIMission
             ACMIMessage message = new(line);
             if(message.IsGlobal)
             {
+                if (message.Segments.FirstOrDefault(s => s.StartsWith("ReferenceTime")) is string str)
+                {
+                    string[] split = str.Split('=');
+                    ReferenceTime = DateTime.TryParse(split[1], out DateTime result) ? result : DateTime.UtcNow;
+                }
                 // Update global stuff
             }
             else if (Objects.ContainsKey(message.ObjectID))
