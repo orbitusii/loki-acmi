@@ -6,33 +6,35 @@ using System.Text;
 using System.Threading.Tasks;
 using tacview_net;
 
-namespace TestConsole
+namespace TestConsole;
+
+internal class DummyPlugin
 {
-    internal class DummyPlugin
+    public DummyPlugin() { }
+
+    public ACMIMission Mission { get; init; } = new ACMIMission();
+
+    internal async Task UpdateMissionAsync(TacviewNetworker source, CancellationToken cancellationToken)
     {
-        public DummyPlugin() { }
+        await Task.Run(() => UpdateMission(source, cancellationToken));
+    }
 
-        public ACMIMission Mission { get; init; } = new ACMIMission();
-
-        internal async Task UpdateMissionAsync(TacviewNetworker source, CancellationToken cancellationToken)
+    /// <summary>
+    /// Synchronous update function for this DummyPlugin
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="cancellationToken"></param>
+    internal void UpdateMission(TacviewNetworker source, CancellationToken cancellationToken)
+    {
+        while (!cancellationToken.IsCancellationRequested)
         {
-            await Task.Run(() => UpdateMission(source, cancellationToken));
-        }
-
-        /// <summary>
-        /// Synchronous update function for this DummyPlugin
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="cancellationToken"></param>
-        internal void UpdateMission(TacviewNetworker source, CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
+            if (source.QueuedMessages.TryDequeue(out string? message))
             {
-                if (source.QueuedMessages.TryDequeue(out string? message))
+                Mission.UpdateWithData(new string[] { message });
+                if (message.StartsWith('#'))
                 {
-                    Mission.UpdateWithData(new string[] { message });
-                    if (message.StartsWith('#'))
-                        Console.WriteLine($"T={Mission.CurrentFrame} => {Mission.Objects.Count()} objects");
+                    Console.Clear();
+                    Console.WriteLine($"T={Mission.CurrentTime_UTC} => {Mission.Objects.Count()} objects");
                 }
             }
         }
